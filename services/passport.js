@@ -45,18 +45,17 @@ passport.use(
 			profileFields: ["id", "displayName", "photos", "email"],
 			proxy: true
 		},
-		(accessToken, refreshToken, profile, done) => {
-			console.log("profile", profile);
-			User.findOne({ facebookId: profile.id }).then(existingUser => {
-				console.log("existingUser:", existingUser);
-				if (existingUser) {
-					done(null, existingUser);
-				} else {
-					new User({ facebookId: profile.id, email: profile.emails[0].value })
-						.save()
-						.then(user => done(null, user));
-				}
-			});
+		async (accessToken, refreshToken, profile, done) => {
+			const existingUser = await User.findOne({ facebookId: profile.id });
+			if (existingUser) {
+				done(null, existingUser);
+			} else {
+				const user = await User({
+					facebookId: profile.id,
+					email: profile.emails[0].value
+				}).save();
+				done(null, user);
+			}
 		}
 	)
 );
