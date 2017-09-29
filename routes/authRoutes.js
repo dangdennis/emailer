@@ -15,10 +15,8 @@ module.exports = app => {
 		})
 	);
 
-	app.get(
-		"/auth/google/callback",
-		passport.authenticate("google"),
-		(req, res) => res.redirect("/surveys")
+	app.get("/auth/google/callback", passport.authenticate("google"), (req, res) =>
+		res.redirect("/surveys")
 	);
 	app.get("/auth/facebook/callback", passport.authenticate("facebook"));
 
