@@ -1,24 +1,23 @@
 // SurveyNew shows SurveyForm and SurveyReview
 import React from 'react';
+import { reduxForm } from 'redux-form';
 import { compose, withState, withHandlers } from 'recompose';
 import SurveyForm from './SurveyForm';
 import SurveyFormReview from './SurveyFormReview';
 
-const SurveyNew = props => {
-    return <div>{renderContent(props)}</div>;
-};
-
-function renderContent({ showFormReview, handleSubmit }) {
+const SurveyNew = ({ showFormReview, handleSubmit }) => {
     if (showFormReview) {
-        return <SurveyFormReview />;
+        return <SurveyFormReview onCancel={handleSubmit} />;
     }
     return <SurveyForm onSurveySubmit={handleSubmit} />;
-}
+};
 
 const enhance = compose(
+    reduxForm({ form: 'surveyForm' }),
     withState('showFormReview', 'setFormReview', false),
     withHandlers({
-        handleSubmit: props => event => props.setFormReview(true)
+        handleSubmit: props => event =>
+            props.setFormReview(!props.showFormReview)
     })
 );
 
